@@ -1,0 +1,10 @@
+- name: Apply basic configuration
+  hosts: mikrotik_routers
+  gather_facts: no
+  collections:
+  - community.network
+  tasks:
+  - name: Set system identity
+    community.routeros.command:
+      commands:
+        - /system identity set name="{{ inventory_hostname }}"

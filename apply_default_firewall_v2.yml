@@ -1,0 +1,46 @@
+---
+- name: Apply firewall rules on Mikrotik devices
+  hosts: mikrotik_routers
+  gather_facts: no
+  vars:
+    firewall_rules:
+      - { chain: "input", action: "accept", connection_state: "established,related", comment: "Allow established and related connections" }
+      - { chain: "input", action: "accept", protocol: "tcp", dst_port: "22", comment: "Allow SSH" }
+      - { chain: "input", action: "accept", protocol: "tcp", dst_port: "8728", comment: "Allow API" }
+      - { chain: "input", action: "accept", protocol: "tcp", dst_port: "8291", comment: "Allow Winbox" }
+      - { chain: "input", action: "accept", protocol: "icmp", comment: "Allow ICMP" }
+      - { chain: "input", action: "drop", comment: "Drop all other input traffic" }
+  tasks:
+    - name: Fetch existing firewall rules
+      community.routeros.command:
+        commands:
+          - /ip firewall filter print
+      register: existing_rules
+
+    - name: Parse existing firewall rules
+      set_fact:
+        firewall_existing: "{{ existing_rules.stdout_lines }}"
+
+    - name: Ensure firewall rules are present
+      loop: "{{ firewall_rules }}"
+      vars:
+        rule_exists: "{{ firewall_existing | select('search', item.comment) | list | length > 0 }}"
+      when: not rule_exists
+      community.routeros.command:
+        commands: >
+          /ip firewall filter add chain={{ item.chain }} action={{ item.action }} 
+          {% if item.protocol is defined and item.protocol | length > 0 %}
+          protocol={{ item.protocol }}
+          {% endif %}
+          {% if item.dst_port is defined and item.dst_port | length > 0 %}
+          dst-port={{ item.dst_port }}
+          {% endif %}
+          {% if item.connection_state is defined and item.connection_state | length > 0 %}
+          connection-state={{ item.connection_state }}
+          {% endif %}
+          comment="{{ item.comment }}"
+      register: add_rule_output
+
+    - name: Display rule addition results
+      debug:
+        var: add_rule_output.stdout_lines

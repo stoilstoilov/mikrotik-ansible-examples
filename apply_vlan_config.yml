@@ -1,0 +1,14 @@
+---
+- name: Configure VLANs on Mikrotik devices
+  hosts: mikrotik_routers
+  gather_facts: no
+  tasks:
+    - name: Add VLAN interface
+      community.routeros.command:
+        commands:
+          - /interface vlan add name=vlan10 vlan-id=20 interface=ether1
+      register: vlan_output
+
+    - name: Display VLAN configuration output
+      debug:
+        var: vlan_output.stdout_lines

@@ -1,0 +1,54 @@
+---
+- name: Apply basic default input firewall on Mikrotik devices
+  hosts: mikrotik_routers
+  gather_facts: no
+  tasks:
+    - name: Allow established and related connections
+      community.routeros.command:
+        commands:
+          - /ip firewall filter add chain=input connection-state=established,related action=accept place-before=0
+      register: established_related_rule_output
+
+    - name: Allow SSH traffic
+      community.routeros.command:
+        commands:
+          - /ip firewall filter add chain=input action=accept protocol=tcp dst-port=22
+      register: ssh_rule_output
+
+    - name: Allow API traffic
+      community.routeros.command:
+        commands:
+          - /ip firewall filter add chain=input action=accept protocol=tcp dst-port=8728
+      register: api_rule_output
+
+    - name: Allow Winbox traffic
+      community.routeros.command:
+        commands:
+          - /ip firewall filter add chain=input action=accept protocol=tcp dst-port=8291
+      register: winbox_rule_output
+
+    - name: Drop all other input traffic
+      community.routeros.command:
+        commands:
+          - /ip firewall filter add chain=input action=drop
+      register: drop_rule_output
+
+    - name: Display established and related connections rule output
+      debug:
+        var: established_related_rule_output.stdout_lines  
+
+    - name: Display SSH rule output
+      debug:
+        var: ssh_rule_output
+
+    - name: Display API rule output
+      debug:
+        var: api_rule_output
+
+    - name: Display Winbox rule output
+      debug:
+        var: winbox_rule_output
+
+    - name: Display drop rule output
+      debug:
+        var: drop_rule_output

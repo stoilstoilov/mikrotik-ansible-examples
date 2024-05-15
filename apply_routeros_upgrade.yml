@@ -1,0 +1,17 @@
+---
+- name: Upgrade RouterOS on Mikrotik devices
+  hosts: mikrotik_routers
+  gather_facts: no
+  tasks:
+    - name: Download RouterOS package
+      community.routeros.command:
+        commands:
+          - /tool fetch url="https://download.mikrotik.com/routeros/7.14.3/routeros-7.14.3.npk" mode=http
+      register: download_output
+
+    - name: Reboot to apply new firmware
+      community.routeros.command:
+        commands:
+          - :execute {/system reboot;}
+
+

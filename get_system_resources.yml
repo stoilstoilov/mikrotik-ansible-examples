@@ -1,0 +1,14 @@
+- name: Get system resources
+  hosts: mikrotik_routers
+  gather_facts: no
+  collections:
+  - community.network
+  tasks:
+  - name: Get system resources and information
+    community.routeros.command:
+      commands: /system resource print
+    register: resource_output
+
+  - name: Display command output
+    debug:
+      var: resource_output.stdout_lines

@@ -1,0 +1,20 @@
+---
+- name: Backup Mikrotik configuration
+  hosts: mikrotik_routers
+  gather_facts: no
+  tasks:
+    - name: Backup configuration
+      community.routeros.command:
+        commands:
+          - /system backup save name=backup_{{ inventory_hostname }} password=your_password
+      register: backup_output
+
+    - name: Fetch backup file
+      fetch:
+        src: /backup_{{ inventory_hostname }}.backup
+        dest: ./backups/
+        flat: yes
+
+    - name: Display backup command output
+      debug:
+        var: backup_output
