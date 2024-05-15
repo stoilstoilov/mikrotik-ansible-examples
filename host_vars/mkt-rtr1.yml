@@ -1,7 +1,2 @@
 firewall_rules:
-      - { chain: "input", action: "accept", connection_state: "established,related", comment: "Allow established and related connections" }
-      - { chain: "input", action: "accept", protocol: "tcp", dst_port: "22", comment: "Allow SSH" }
-      - { chain: "input", action: "accept", protocol: "tcp", dst_port: "8728", comment: "Allow API" }
-      - { chain: "input", action: "accept", protocol: "tcp", dst_port: "8291", comment: "Allow Winbox" }
-      - { chain: "input", action: "accept", protocol: "icmp", comment: "Allow ICMP" }
-      - { chain: "input", action: "drop", comment: "Drop all other input traffic" }
+      - { chain: "input", action: "accept", protocol: "tcp", dst_port: "22", comment: "Allow HTTP" }
