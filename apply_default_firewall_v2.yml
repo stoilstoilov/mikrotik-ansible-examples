@@ -43,4 +43,4 @@
 
     - name: Display rule addition results
       debug:
-        var: add_rule_output.stdout_lines
+        var: add_rule_output
