@@ -1,0 +1,11 @@
+---
+- name: Upgrade RouterOS on Mikrotik devices
+  hosts: mikrotik_routers
+  gather_facts: no
+  tasks:
+    - name: Reset configuration
+      community.routeros.command:
+        commands:
+          - :execute {/system reset-configuration keep-users=yes;}
+
+
