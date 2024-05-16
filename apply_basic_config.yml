@@ -8,3 +8,7 @@
     community.routeros.command:
       commands:
         - /system identity set name="{{ inventory_hostname }}"
+  - name: Configure DNS servers
+    community.routeros.command:
+      commands:
+        - /ip dns set servers="{{dns_servers}}"
