@@ -27,3 +27,29 @@ Download an upgrade package and reboot routers to install new version
 
 Backups the RouterOS configuration and fetches the file
 
+
+## Notes
+
+#### Basic response check
+
+ansible mikrotik_routers -m ping -i inventory.ini
+
+#### Apply basic configuration - hostname and DNS server
+
+ansible-playbook apply_basic_config.yml -i inventory.ini
+
+#### Apply basic firewall
+
+ansible-playbook apply_basic_firewall.yml -i inventory.ini
+
+#### Reset configuration
+
+ansible-playbook reset_configuration.yml -i inventory.ini
+
+#### Apply better basic firewall
+
+ansible-playbook apply_basic_firewall.yml -i inventory.ini
+
+#### Upgrade RouterOS
+
+ansible-playbook apply_routeros_upgrade.yml --limit mikrotik_routers[2:4] -i inventory.ini
