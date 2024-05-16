@@ -8,6 +8,6 @@
         commands:
           - :execute {/system reset-configuration keep-users=yes;}
       register: command_result
-      failed_when: "'Received SSH_MSG_DISCONNECT' not in command_result.stdout_lines"
+      failed_when: "'Received SSH_MSG_DISCONNECT' not in command_result.msg"
 
 
